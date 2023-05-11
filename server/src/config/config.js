@@ -1,10 +1,12 @@
-import dotenv from "dotenv";
-import path from "path";
+const path = require('path');
+require('dotenv').config({
+  path: path.resolve('/workspaces/Scissor/server', '.env'),
+});
 
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
-
-export default {
+const CONFIG = {
   port: process.env.PORT || 3000,
+  rateLimitWindowMs: process.env.RATE_LIMIT_WINDOW_MS,
+  rateLimitMax: process.env.RATE_LIMIT_MAX,
   db: {
     url: process.env.MONGODB_URL,
   },
@@ -18,3 +20,5 @@ export default {
     ttl: process.env.REDIS_TTL,
   },
 };
+
+module.exports = CONFIG;
