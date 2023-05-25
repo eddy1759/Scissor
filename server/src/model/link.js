@@ -13,7 +13,7 @@ const LinkSchema = new Schema(
       required: true,
       unique: true,
     },
-    customUrl: {
+    customDomain: {
       type: String,
       unique: true,
     },
