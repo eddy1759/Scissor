@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+const mongoose = require("mongoose")
+const bcrypt = require("bcrypt")
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const UserSchema = new Schema(
   {
@@ -19,31 +19,19 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    confirmPassword: {
-      type: String,
-      required: true,
-      validate: {
-        validator: function (value) {
-          return this.password === value;
-        },
-        message: 'Passwords do not match',
-      },
-    },
   },
   { timestamps: true }
-);
+)
 
-UserSchema.pre('save', async function (next) {
-  const user = this;
-  if (this.isModified('password') || this.isNew) {
-    const hash = await bcrypt.hash(user.password, 10);
-    user.password = hash;
+UserSchema.pre("save", async function (next) {
+  const user = this
+  if (this.isModified("password") || this.isNew) {
+    const hashPassword = await bcrypt.hash(user.password, 10)
+    user.password = hashPassword
   }
-  return next();
-});
+  return next()
+})
 
-UserSchema.methods.comparePassword = async function (password) {
-  return bcrypt.compare(this.password, password);
-};
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model("User", UserSchema)
+module.exports = User

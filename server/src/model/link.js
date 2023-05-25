@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose")
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const LinkSchema = new Schema(
   {
@@ -19,7 +19,7 @@ const LinkSchema = new Schema(
     },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     clicks: {
@@ -28,6 +28,6 @@ const LinkSchema = new Schema(
     },
   },
   { timestamps: true }
-);
+)
 
-module.exports = mongoose.model('Link', LinkSchema);
+module.exports = mongoose.model("Link", LinkSchema)

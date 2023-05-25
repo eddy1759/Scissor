@@ -1,22 +1,29 @@
 {
   "devDependencies": {
-    "eslint": "^8.0.0",
+    "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-node": "^11.1.0",
+    "nodemon": "^2.0.22",
     "prettier": "^2.4.1"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "express-rate-limit": "^6.7.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.1.4"
+    "mongoose": "^6.1.4",
+    "nanoid": "^4.0.2",
+    "qrcode": "^1.5.3",
+    "valid-url": "^1.0.9",
+    "winston": "^3.8.2"
   },
   "scripts": {
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "start:dev": "nodemon app"
   },
   "eslintConfig": {
     "extends": [
