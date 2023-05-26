@@ -11,16 +11,17 @@ const outputFileName = "qrcode.png"
 const outputPath = path.join(outputDir, outputFileName)
 fs.mkdirSync(outputPath, {recursive: true})
 
-exports.generateToken = ({ payLoad }) => {
-  const secret = CONFIG.secret
-  const expiresIn = CONFIG.expiresIn
+const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-  return jwt.sign({ payLoad }, secret, { expiresIn })
+exports.generateToken = ( userId ) => {
+  const secret = CONFIG.secret
+  return jwt.sign({ userId }, secret, { expiresIn: "1h" })
 }
 
 
-exports.generateShortUrl = () => {
-  return nanoId(8)
+exports.generateShortString = () => {
+  const generateCode = nanoId.customAlphabet(alphabet, 8)
+  return generateCode()
 }
 
 exports.generateQRCode = async (url) => {
@@ -41,6 +42,10 @@ exports.generateQRCode = async (url) => {
     console.error("Error generating QR code:", error)
 
   }
+}
+
+exports.encodeBaseURL = (protocol, host) => {
+  return `${protocol}://${host}`
 }
 
 

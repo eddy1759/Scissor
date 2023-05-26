@@ -37,7 +37,7 @@ const login = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({error: "Invalid email or password"})
         }
-        const token = helper.generateToken({userId: user._id})
+        const token = helper.generateToken(user._id)
         res.status(200).json(token)
     } catch (error) {
         console.error(error)

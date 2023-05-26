@@ -1,33 +1,37 @@
 const Links = require("../model/link")
 const helper = require("../utils/helper")
-const CONFIG = require("../config/config")
 const validUrl = require("valid-url")
 
 
 const createShortUrl = async(req, res) => {
+    // console.log(req)
     try {
         if (!req.body) {
             return res.status(400).send("Invalid request")
         }
-        const {url, customDomain} =  req.body
-        const userId = req.user.userId
+        const {url, customUrl} =  req.body
+        const userId = req.user
 
         if (!validUrl.isWebUri(url)) {
             return res.status(400).json({error: "Invalid URL"})
         }
        
-        const shortCode = helper.generateShortUrl()
-        // const shortURL = `${CONFIG.BASE_URL}\${shortCode}`
+        const shortCode = helper.generateShortString()
+        console.log(shortCode)
+
+        const protocol = req.protocol
+        const host = req.get("host")
+        const BASE_URL = helper.encodeBaseURL(protocol, host)
+
         const dataLinks =  new Links({
             url,
             shortUrl: shortCode,
-            customDomain,
+            customUrl,
             createdBy: userId
         })
         await dataLinks.save()
-        // Return the shortened URL to the user
-        // Return the shortened URL to the user
-        const shortenedURLString = customDomain ? `${customDomain}/${shortCode}` : `${CONFIG.BASE_URL}\${shortCode}`
+        
+        const shortenedURLString = customUrl ? `${BASE_URL}/${customUrl}` : `${BASE_URL}/${shortCode}`
 
         res.status(200).json({
             status: true,
@@ -40,7 +44,32 @@ const createShortUrl = async(req, res) => {
     }
 }
 
+// This controller is strictly for development will remove in final code after proper evaluation
+const getLinksByUser = async(req, res) => {
+    try {
+        const createdBy = req.user
+        if (!createdBy) {
+            return res.status(400).send("Users not authenticated")
+        }
+        const links = await Links.find({}).populate({path: "createdBy", select: "-email -password -createdAt -updatedAt -__v"}).select(" -__v")
+        res.status(200).json({
+            status: true,
+            links 
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            status: false,
+            message: "An error occurred while retrieving the links."
+        })
+    }
+}
 
-module.exports = createShortUrl
+
+
+module.exports = {
+    createShortUrl,
+    getLinksByUser
+}
 
 
