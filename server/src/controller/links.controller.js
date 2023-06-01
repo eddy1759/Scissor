@@ -1,10 +1,10 @@
 const Links = require("../model/link")
 const helper = require("../utils/helper")
 const validUrl = require("valid-url")
+const qr = require("qrcode")
 
 
 const createShortUrl = async(req, res) => {
-    // console.log(req)
     try {
         if (!req.body) {
             return res.status(400).send("Invalid request")
@@ -17,7 +17,6 @@ const createShortUrl = async(req, res) => {
         }
        
         const shortCode = helper.generateShortString()
-        console.log(shortCode)
 
         const protocol = req.protocol
         const host = req.get("host")
@@ -25,8 +24,7 @@ const createShortUrl = async(req, res) => {
 
         const dataLinks =  new Links({
             url,
-            shortUrl: shortCode,
-            customUrl,
+            shortUrl: customUrl || shortCode,
             createdBy: userId
         })
         await dataLinks.save()
@@ -57,7 +55,7 @@ const getLinksByUser = async(req, res) => {
             links 
         })
     } catch (error) {
-        console.log(error)
+        console.error(error)
         res.status(500).json({
             status: false,
             message: "An error occurred while retrieving the links."
@@ -66,10 +64,39 @@ const getLinksByUser = async(req, res) => {
 }
 
 
+const createQRCode = async (req, res) => {
+    const shortUrl= req.params.shortUrl
+    try {
+        const data = await Links.findOne({shortUrl})
+        if (!data) {
+            return res.status(404).json({
+               error:  "URL Not Found"
+            })
+        }
+        qr.toDataURL(data.url, (err, url) => {
+            if (err) {
+              console.error(err)
+              return res.status(500).send("Internal Server Error")
+            }
+        
+            res.status(200).send(`<img src="${url}"/>`) // Render the QR code image in the response
+        })
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            status: false,
+            message: "An error occurred while creating qrcode."
+        })
+    }
+}
+
+
 
 module.exports = {
     createShortUrl,
-    getLinksByUser
+    getLinksByUser,
+    createQRCode
 }
 
 

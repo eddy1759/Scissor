@@ -13,10 +13,6 @@ const LinkSchema = new Schema(
       required: true,
       unique: true,
     },
-    customUrl: {
-      type: String,
-      unique: true,
-    },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
